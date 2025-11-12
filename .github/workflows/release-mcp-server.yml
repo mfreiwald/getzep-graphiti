@@ -20,6 +20,7 @@ jobs:
     permissions:
       contents: write
       id-token: write
+      packages: write
     environment:
       name: release
     strategy:
@@ -81,7 +82,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get latest graphiti-core version from PyPI
         id: graphiti
