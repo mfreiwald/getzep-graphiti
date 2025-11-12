@@ -16,7 +16,7 @@ env:
 
 jobs:
   release:
-    runs-on: depot-ubuntu-24.04-small
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       id-token: write
@@ -83,9 +83,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Depot CLI
-        uses: depot/setup-action@v1
-
       - name: Get latest graphiti-core version from PyPI
         id: graphiti
         run: |
@@ -127,10 +124,12 @@ jobs:
             org.opencontainers.image.vendor=mfreiwald
             graphiti.core.version=${{ steps.graphiti.outputs.graphiti_version }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build and push Docker image (${{ matrix.variant.name }})
-        uses: depot/build-push-action@v1
+        uses: docker/build-push-action@v5
         with:
-          project: v9jv1mlpwc
           context: ./mcp_server
           file: ./mcp_server/${{ matrix.variant.dockerfile }}
           platforms: linux/amd64,linux/arm64
