@@ -11,8 +11,8 @@ on:
         type: string
 
 env:
-  REGISTRY: docker.io
-  IMAGE_NAME: zepai/knowledge-graph-mcp
+  REGISTRY: ghcr.io
+  IMAGE_NAME: mfreiwald/knowledge-graph-mcp
 
 jobs:
   release:
@@ -76,12 +76,12 @@ jobs:
 
           echo "version=$PROJECT_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Log in to Docker Hub
+      - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Depot CLI
         uses: depot/setup-action@v1
@@ -124,7 +124,7 @@ jobs:
             org.opencontainers.image.title=${{ matrix.variant.title }}
             org.opencontainers.image.description=${{ matrix.variant.description }}
             org.opencontainers.image.version=${{ steps.version.outputs.version }}
-            org.opencontainers.image.vendor=Zep AI
+            org.opencontainers.image.vendor=mfreiwald
             graphiti.core.version=${{ steps.graphiti.outputs.graphiti_version }}
 
       - name: Build and push Docker image (${{ matrix.variant.name }})
